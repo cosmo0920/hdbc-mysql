@@ -136,10 +136,10 @@ testWithTransaction = dbTestCase (\dbh ->
        qrysth <- prepare dbh "SELECT testid FROM hdbctest1 WHERE testname = 'withTransaction' ORDER BY testid"
        execute qrysth []
        fetchAllRows qrysth >>= (assertEqual "initial commit" [[toSql "0"]])
-       
+
        -- Let's try a rollback.
-       try $ withTransaction dbh (\_ -> do executeMany sth rows
-                                           fail "Foo")
+       withTransaction dbh (\_ -> do executeMany sth rows
+                                     fail "Foo")
        execute qrysth []
        fetchAllRows qrysth >>= (assertEqual "rollback" [[SqlString "0"]])
 
